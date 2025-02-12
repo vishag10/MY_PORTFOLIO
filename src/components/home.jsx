@@ -1,11 +1,21 @@
 
 import "../App.css"
 import React from "react";
-import profile from "../assets/img/vishak.png";
+import profile from "../assets/img/Adobe Express - file (2).png";
 import profile1 from "../assets/img/vishaknobg.png";
+import work1 from "../assets/img/work1.png";
+import work2 from "../assets/img/work2.png";
+import work3 from "../assets/img/work3.png";
+import work4 from "../assets/img/work4.png";
+import { motion } from "framer-motion";
+import { useState } from "react";
 import BlurText from './blur';
 import { useEffect } from "react";
 import {Link as ScrollLink} from "react-scroll";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub, faLinkedin, faInstagram } from "@fortawesome/free-brands-svg-icons";
+
+
 const SkillBar = ({ skill, percentage, imgSrc }) => (
   <div className="skill-bar">
     <div className="skill-header">
@@ -30,6 +40,29 @@ const SkillBar = ({ skill, percentage, imgSrc }) => (
 
 function Home() {
 
+  useEffect(() => {
+    const sections = document.querySelectorAll(".skills, .work");
+    const workItems = document.querySelectorAll(".work_item1");
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("show");
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    workItems.forEach((item) => observer.observe(item));
+
+    return () => {
+      sections.forEach((section) => observer.unobserve(section));
+      workItems.forEach((item) => observer.unobserve(item));
+    };
+  }, []);
   
   useEffect(() => {
     const handleScroll = () => {
@@ -80,7 +113,7 @@ function Home() {
     { skill: "Express.js", percentage: 80, imgSrc: "https://www.vectorlogo.zone/logos/expressjs/expressjs-icon.svg" },
     { skill: "Node.js", percentage: 85, imgSrc: "https://www.svgrepo.com/show/303360/nodejs-logo.svg" }
   ];
-
+  const [isHovered, setIsHovered] = useState(false);
   return (
     <>
       <nav className="nav bd-grid">
@@ -118,9 +151,24 @@ function Home() {
           </div>
         </div>
         <div className="hphoto">
-          <div className="himg">
-            <img src={profile} alt="" />
-          </div>
+        <motion.div
+      className="himg"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1 }}
+      whileHover={{ scale: 1.2, boxShadow: "0px 15px 40px rgba(0, 0, 0, 0.3)" }}
+      whileTap={{ scale: 1.5, transition: { duration: 0.3 } }} // Expands on touch
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <motion.img
+        src={profile}
+        alt="Profile"
+        className="himg-img"
+        animate={{ opacity: isHovered ? 1 : 0.7 }} // Fades when not hovered
+        transition={{ duration: 0.5 }}
+      />
+    </motion.div>
         </div>
       </div>
       <div className="about" id='about'>
@@ -172,19 +220,56 @@ function Home() {
         </div>
         <div className="work_container">
           <div className="work_item1">
-          <img src={profile1} alt="" />
+          <img src={work1} alt="" />
           </div>
           <div className="work_item1">
-          <img src={profile1} alt="" />
+          <img src={work2} alt="" />
           </div>
           <div className="work_item1">
-          <img src={profile1} alt="" />
+          <img src={work3} alt="" />
           </div>
           <div className="work_item1">
-          <img src={profile1} alt="" />
+          <img src={work4} alt="" />
           </div>
         </div>
       </div>
+
+      <div className="contact" id="contact">
+        <div className="contact_head">
+          <h1>Contact</h1>
+        </div>
+        <div className="contact_container">
+          <div className="contact_form">
+            <h2>Contact Me</h2>
+            <form>
+              <input type="text" placeholder="Your Name" required />
+              <input type="email" placeholder="Your Email" required />
+              <textarea placeholder="Your Message" rows="5" required></textarea>
+              <button type="submit">Send Message</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      
+      <footer className="footer">
+        <div className="footer_container">
+          <div className="pvt">
+          <p>&copy; {new Date().getFullYear()} Vishak. All Rights Reserved.</p> 
+          </div>
+          <div className="footer_social">
+            <a href="https://github.com/vishag10" target="_blank" rel="noopener noreferrer">
+              <FontAwesomeIcon icon={faGithub} className="footer_icon" />
+            </a>
+            <a href="https://www.linkedin.com/in/vishakchandran/" target="_blank" rel="noopener noreferrer">
+              <FontAwesomeIcon icon={faLinkedin} className="footer_icon" />
+            </a>
+            <a href="https://www.instagram.com/vi._shag?igsh=MTQ0cWZqaDlza2NpcA%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer">
+              <FontAwesomeIcon icon={faInstagram} className="footer_icon" />
+            </a>
+          </div>
+        </div>
+      </footer>
     </>
   )
 }
